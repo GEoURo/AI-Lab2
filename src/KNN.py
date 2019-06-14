@@ -1,5 +1,6 @@
 from import_data import *
 np.set_printoptions(threshold=np.inf)
+
 class KNearestNeighbour(object):
     def __init__(self):
         pass
@@ -18,24 +19,24 @@ class KNearestNeighbour(object):
         self.X_train = X
         self.Y_train = Y
 
-    def predict(self, testset, k=1):
+    def predict(self, X_test, k=1):
         """
-        Predict labels for the testset
+        Predict labels for the X_test
 
         Inputs:
-        testset: A numpy array of shape (test_batch_size, D), each 
+        X_test: A numpy array of shape (test_batch_size, D), each 
         data has a dimension of D.
 
         Returns:
         Y: A numpy array of shape (test_batch_size,) containing predicted labels for the
         test data, where Y[i] is the predicted label for the test point X[i]. 
         """
-        num_test = testset.shape[0]
+        num_test = X_test.shape[0]
         num_train = self.X_train.shape[0]
         dists = np.zeros((num_test, num_train))
         
         # Calculate the l2 distance between all the test points and training points(vectorized)
-        dists = np.sqrt(np.sum(testset ** 2, axis=1, keepdims=True) + np.sum(self.X_train ** 2, axis=1) - 2 * testset.dot(self.X_train.T))
+        dists = np.sqrt(np.sum(X_test ** 2, axis=1, keepdims=True) + np.sum(self.X_train ** 2, axis=1) - 2 * X_test.dot(self.X_train.T))
         
         # Do the prediction based on the dists matrix
         Y = self.predict_labels(dists, k=k)
@@ -64,6 +65,7 @@ class KNearestNeighbour(object):
         """
         Calculate and return accuracy, Macro F1 and Micro F1 according to 
         y_pred and testlabels
+        
         Inputs:
         y_pred: A numpy array of shape (test_batch_size, ) which is the prediction result
         and is turned into onehot vectors in this function.
@@ -117,7 +119,7 @@ class KNearestNeighbour(object):
 
 if __name__ == "__main__":
     classifier = KNearestNeighbour()
-    X_train, Y_train, X_test, Y_test = load_data()
+    X_train, Y_train, X_test, Y_test = load_data_chess()
     print('Training data shape: ', X_train.shape)
     print('Training labels shape: ', Y_train.shape)
     print('Test data shape: ', X_test.shape)
