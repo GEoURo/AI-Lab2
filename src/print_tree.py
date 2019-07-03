@@ -13,7 +13,7 @@ def plot_node(node_text, center, parent, node_type):
 
 def create_plot(tree):
     # 创建新图形并清空绘图区
-    figure = plt.figure(1, facecolor='white', figsize=(80, 7))
+    figure = plt.figure(1, facecolor='white', figsize=(12, 7))
     figure.clf()
     # 下面三行就绘制的那个示例
     # create_plot.ax1 = plt.subplot(111,frameon = False)

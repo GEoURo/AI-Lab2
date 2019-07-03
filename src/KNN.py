@@ -127,7 +127,7 @@ if __name__ == "__main__":
     
     # Set up training data
     num_folds = 5
-    k_choices = [1, 3, 5, 8, 10, 12, 15, 20, 50, 100]
+    k_choices = [1, 5, 8, 10, 15, 20, 50, 100]
     X_train_folds = []
     Y_train_folds = []
 
@@ -135,9 +135,12 @@ if __name__ == "__main__":
     Y_train_folds = np.array(np.array_split(Y_train, num_folds))
 
     k_to_Micro_F1 = []
-
+    k_to_Macro_F1 = []
+    k_to_Accu = []
     for k in k_choices:
         temp = []
+        temp_AC = []
+        tempF1 = []
         for i in range(num_folds):
             selected_folds = [x for x in range(num_folds) if x != i]
             selected_X_train = np.concatenate(X_train_folds[selected_folds])
@@ -146,9 +149,13 @@ if __name__ == "__main__":
 
             y_predicts = classifier.predict(X_train_folds[i], k)
             accuracy, Macro_F1, Micro_F1 = classifier.measure(y_predicts, Y_train_folds[i])
+            temp_AC.append((accuracy))
             temp.append(Micro_F1)
+            tempF1.append(Macro_F1)
         k_to_Micro_F1.append(temp)
-    
+        k_to_Macro_F1.append(tempF1)
+        k_to_Accu.append(temp_AC)
+
     # Print all the cross validation results
     for key, value in enumerate(k_to_Micro_F1):
         for Micro_F1 in value:
@@ -156,7 +163,12 @@ if __name__ == "__main__":
     
     # Print the mean results and select the best resulted k as the final parameter set up
     k_to_Micro_F1 = np.mean(k_to_Micro_F1, axis=1)
+    k_to_Accu = np.mean(k_to_Accu, axis=1)
+    k_to_Macro_F1 = np.mean(k_to_Macro_F1, axis=1)
+    print(k_to_Accu)
+    print(k_to_Macro_F1)
     print(k_to_Micro_F1)
+
     best_k = k_choices[np.argmax(k_to_Micro_F1)]
     print("Max k choice:",best_k)
     
